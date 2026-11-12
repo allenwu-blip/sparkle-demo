@@ -32,6 +32,9 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  // the story film streams straight from the network (Safari plays video with range
+  // requests); it isn't kept offline, where the drawn story plays instead
+  if (url.pathname.endsWith(".mp4") || req.headers.has("range")) return;
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
